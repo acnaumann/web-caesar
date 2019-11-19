@@ -1,5 +1,5 @@
 from flask import Flask, request
-from caesar import rotate_character
+from caesar import rotate_string
 
 
 app = Flask(__name__)
@@ -11,31 +11,31 @@ form = """
 <html>
     <head>
         <style>
-            form{
+            form{{
                 background-color: #eee;
                 padding: 20px;
                 margin 0 auto;
                 width: 540px;
                 font 16px sans-serif;
                 border-radius: 10px;
-            }
-            testarea {
+            }}
+            textarea {{
                 margin: 10px 0;
                 width: 540px;
                 height: 120px;
-            }
+            }}
         </style>
     </head>
     <body>
-        <form action="/encrypt" method="post">
-            <label for="rotate-by">
+        <form method='POST'>
+            <label for="/rot" >
                 Rotate by:
-                
-                <input id="rotate-by" type="text" name="rot" value=0 />
+                <input  type="text" name='rot' value=0 />
+            </label>
                 <br>
                 <br>
-                <label for="text">
-                <textarea id="text" name="text"></textarea>
+            <label >
+                <textarea name="text">{0}</textarea>
                 <br>
             </label>
             
@@ -46,24 +46,17 @@ form = """
 </html>
 """
 
-@app.route("/encrypt", methods=['POST'])
-def encrypt(rot, text):
-    rot = request.form['rotate-by']
+@app.route("/", methods=['POST'])
+def encrypt():
+    rot = request.form['rot']
     text = request.form['text']
-    new_phrase = ""
-    for letter in text:
-        new_letter = rotate_character(letter, rot)
-        new_phrase += new_letter
-    return "<h1>" + new_phrase + "<h1>"
-
-    
-    
-     
- 
+    rotated_string = rotate_string(text, int(rot))
+    return "<h1>" + form.format(rotated_string) + "<h1>"
 
 
 @app.route("/")
 def index():
-    return form
+    empty_string = ''
+    return form.format(empty_string)
 
 app.run()
